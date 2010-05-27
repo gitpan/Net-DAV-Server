@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Net-DAV-Server
-version:            1.300_02
+version:            1.300_03
 abstract:           ~
 author:  []
 license:            unknown
@@ -10,10 +10,15 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
+    Carp:                 0
+    DBD::SQLite:          0
+    DBI:                  0
     Digest::SHA1:         0
     Encode:               0
     File::Find::Rule::Filesys::Virtual:  0
     File::Slurp:          0
+    File::Spec:           0
+    File::Temp:           0
     HTTP::Date:           0
     HTTP::Headers:        0
     HTTP::Request:        0
