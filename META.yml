@@ -1,13 +1,11 @@
 --- #YAML:1.0
 name:               Net-DAV-Server
-version:            1.300_03
+version:            1.300_04
 abstract:           ~
 author:  []
 license:            unknown
 distribution_type:  module
 configure_requires:
-    ExtUtils::MakeMaker:  0
-build_requires:
     ExtUtils::MakeMaker:  0
 requires:
     Carp:                 0
@@ -26,12 +24,12 @@ requires:
     Test::More:           0
     URI:                  0
     URI::Escape:          0
-    XML::LibXML:          0
+    XML::LibXML:          1.62
 no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.50
+generated_by:       ExtUtils::MakeMaker version 6.48
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4
