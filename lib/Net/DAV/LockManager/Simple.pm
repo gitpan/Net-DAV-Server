@@ -4,7 +4,7 @@ use Net::DAV::Lock;
 
 use strict;
 
-our $VERSION = '1.300_01';
+our $VERSION = '1.301';
 $VERSION = eval $VERSION;
 
 #
@@ -94,11 +94,7 @@ sub add {
 sub remove {
     my ($self, $lock) = @_;
 
-    for (my $i=0; $$self[$i]; $i++) {
-        if ($$self[$i]->path eq $lock->path) {
-            splice @$self, $i, 1;
-        }
-    }
+    @{$self} = grep { $_->path ne $lock->path } @{$self};
 }
 
 1;
