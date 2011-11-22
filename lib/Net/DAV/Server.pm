@@ -16,7 +16,7 @@ use XML::LibXML::XPathContext;
 use Net::DAV::LockManager ();
 use Net::DAV::LockManager::DB ();
 
-our $VERSION = '1.303';
+our $VERSION = '1.304';
 $VERSION = eval $VERSION;  # convert development version into a simpler version number.
 
 our %implemented = (
@@ -792,6 +792,9 @@ sub propfind {
                         $prop->addChild( $active );
                     }
                 }
+                elsif ( $ns eq 'DAV:' && $name eq 'supportedlock' ) {
+                    $prop = _supportedlock_child( $okprops );
+                }
                 else {
                     my $prefix = $prefixes{$ns};
                     if ( !defined $prefix ) {
@@ -822,16 +825,7 @@ sub propfind {
             _dav_child( $okprops, 'getcontentlength', $is_dir ? () : ($size) );
             _dav_child( $okprops, 'getcontenttype', $is_dir ? 'httpd/unix-directory' : 'httpd/unix-file' );
             _dav_child( $okprops, 'getlastmodified', $mtime );
-            do {
-                $prop = _dav_child( $okprops, 'supportedlock' );
-                #for my $n (qw(exclusive shared)) {  # shared is currently not supported.
-                for my $n (qw(exclusive)) {
-                    my $lock = _dav_child( $prop, 'lockentry' );
-
-                    _dav_child( _dav_child( $lock, 'lockscope' ), $n );
-                    _dav_child( _dav_child( $lock, 'locktype' ), 'write' );
-                }
-            };
+            $prop = _supportedlock_child( $okprops );
             my $user = ($request->authorization_basic())[0]||'';
             my @locks = $self->_lock_manager()->list_all_locks({ 'path' => $path, 'user' => $user });
             if ( @locks ) {
@@ -864,6 +858,20 @@ sub propfind {
     $response->content( $doc->toString(0) );
 
     return $response;
+}
+
+sub _supportedlock_child {
+    my ($okprops) = @_;
+    my $prop = _dav_child( $okprops, 'supportedlock' );
+    #for my $n (qw(exclusive shared)) {  # shared is currently not supported.
+    for my $n (qw(exclusive)) {
+        my $lock = _dav_child( $prop, 'lockentry' );
+
+        _dav_child( _dav_child( $lock, 'lockscope' ), $n );
+        _dav_child( _dav_child( $lock, 'locktype' ), 'write' );
+    }
+
+    return $prop;
 }
 
 1;
